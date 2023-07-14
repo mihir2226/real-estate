@@ -1,4 +1,3 @@
-# real-estate
 note : ignore all <code></code> tags inside documentation.
 
 
@@ -104,7 +103,7 @@ note : ignore all <code></code> tags inside documentation.
 -> data file(csv):
 	ir.model.access.csv
 
--> Access rights:
+-> Access rights: 
 	-> When no access rights are defined on a model, Odoo determines that no users can access the data. It is even notified in the log:
 
 	ex:
@@ -185,47 +184,47 @@ note : ignore all <code></code> tags inside documentation.
 
 -> so as we created tree view, now we are going to create another view named form view.
 	<code>
-	 <record id="estate_property_form" model="ir.ui.form">
-	   <field name="name">estate.property.form</field>
-	   <field name="model">estate.property</field>
-	   <field name="arch" type="xml">
-	     <form>
-		<sheet>
-		  <field name="name"/>
-		  <field name="age"/>
-		  <field name="dob"/>
-		</sheet>
-	     </form>
-	  </field>
-	 </record>
+		<record id="estate_property_form" model="ir.ui.form">
+			<field name="name">estate.property.form</field>
+			<field name="model">estate.property</field>
+			<field name="arch" type="xml">
+				<form>
+					<sheet>
+						<field name="name"/>
+						<field name="age"/>
+						<field name="dob"/>
+					</sheet>
+				</form>
+			</field>
+		</record>
 	</code>
 
 -> we can add pages inside form view: so lets see how to do that.
 	<code>
-	 <notebook>
+		<notebook>
             <page string="Description">
                 <field name="description"/>
             </page>
-         </notebook>
+        </notebook>
 	</code>
 
 -> until now we seen how to create tree view and form view. but what if we want to search something from search bar. so for that purpose we have to create search view.
 	<code>
-	 <record id="estate_property_search" model="ir.ui.view">
-		<field name="name">estate.property.search</field>
-		<field name="model">estate.property</field>
-		<field name="arch" type="xml">
-			<search>
-				<field name="name"/>
-				<field name="age"/>
-				<field name="dob"/>
-				<field name="gender"/>
-			</search>
-		</field>
-	 </record>	
+		<record id="estate_property_search" model="ir.ui.view">
+			<field name="name">estate.property.search</field>
+			<field name="model">estate.property</field>
+			<field name="arch" type="xml">
+				<search>
+					<field name="name"/>
+					<field name="age"/>
+					<field name="dob"/>
+					<field name="gender"/>
+				</search>
+			</field>
+		</record>	
 	</code> 
 
--> now lets create filters in search view.
+-> now lets create filters in search view:
 	<code>
 		<filter string="Available" name="available" domain="[('age','>','18')]"/>
 	</code>
@@ -247,3 +246,194 @@ note : ignore all <code></code> tags inside documentation.
 	1. Many2one
 	2. Many2many
 	3. One2many
+
+Many2one:
+	-> Many2one field you can select only one value from related module.
+
+	ex:
+	<code>
+		#estate property model
+		from odoo import fields, models
+
+		class EstateProperty(models.Model):
+			_name = 'estate.property'
+			_description = "its estate main table"
+
+			property_type_id = fields.Many2one('estate.property.type' string="Property Type")
+	</code>
+
+	-> estate_property_type model.
+	
+	<code>
+		from odoo import fields, models
+
+		class EstatePropertyType(models.Model):
+			_name = 'estate.property.type'
+			_description = "this table contain types of properties"
+
+			name = fields.Char()
+	</code>
+
+
+Many2many:
+	-> Many2many field you can select multiple value from related module.
+
+	ex:
+	<code>
+		#estate property model
+		from odoo import fields, models
+
+		class EstateProperty(models.Model):
+			_name = 'estate.property'
+			_description = "its estate main table"
+
+			property_tags_ids = fields.Many2many('estate.property.tags' string="Property Tags")
+	</code>
+
+	-> estate_property_tags model.
+
+	<code>
+		from odoo import fields, models
+
+		class EstatePropertyTags(models.Model):
+			_name = 'estate.property.tags'
+			_description = "this table contain tags of properties"
+
+			name = fields.Char()
+	</code>
+
+One2many:
+	-> One2many field you can create new records(values) from related module.
+
+	ex:
+	<code>
+		#estate property model
+		from odoo import fields, models
+
+		class EstateProperty(models.Model):
+			_name = 'estate.property'
+			_description = "its estate main table"
+
+			property_offers_ids = fields.One2many('estate.property.offers', '' )
+	</code>
+
+	-> estate_property_offers model.
+	-> Whenever you using One2many do not forget to add inverse Many2one key in the model you relating.
+
+	<code>
+		from odoo import fields, models
+
+		class EstatePropertyOffers(models.Model):
+			_name = 'estate.property.offers'
+			_description = "this table contain offers for properties"
+
+			price = fields.Float()
+			state = fields.Selection(selection=[('accept','Accepted'),('reject','Refused')],copy=False)
+			partner_id = fields.Many2one("res.partner", required=True) 
+			property_id = fields.Many2one("estate.property", required=True) 
+			validity = fields.Integer(default = 7)
+			deadline = fields.Date()
+	</code>
+
+	-> estate_property_offers_view view.
+
+	<code>
+		<?xml version="1.0" encoding="UTF-8"?>
+		<odoo>
+			<record id="estate_offer_tree" model="ir.ui.view">
+		        <field name="name">estate.offer.tree</field>
+		        <field name="model">estate.property.offer</field>
+		        <field name="arch" type="xml">
+		            <tree string="Property offer" editable="bottom">
+		               <field name="price"/>
+		               <field name="partner_id"/>
+		               <field name="state"/>
+		               <field name="validity" string="Validity(days)"/>
+		               <field name="deadline"/>
+		            </tree>
+		        </field>
+		    </record>
+
+			<record id="estate_offer_form" model="ir.ui.view">
+				<field name="name">estate.offer.form</field>
+		        <field name="model">estate.property.offer</field>
+		        <field name="arch" type="xml">
+		        	<form string="Offers">
+		        		<sheet>
+		                    <group>
+		                        <field name="price"/>
+		                        <field name="partner_id"/>
+		                        <field name="property_id"/>
+		                        <field name="validity" string="Validity(days)"/>
+		                        <field name="deadline"/>
+		                        <field name="state"/>
+		                    </group>
+		        		</sheet>
+		        	</form>
+		        </field>
+			</record>
+		</odoo>
+	</code>
+
+	-> Now create view for One2many field inside estate_property_view (form view)
+
+	<code>
+		<?xml version="1.0" encoding="UTF-8"?>
+		<odoo>
+			<notebook>
+				<page string="Offers">
+	                <field name="offer_ids">
+	                    <tree string='offer'>
+	                        <field name='price' string='Price'/>
+	                        <field name='partner_id' string='Partner'/>
+	                        <field name="validity" string="Validity(days)"/>
+	                        <field name="deadline"/>
+	                        <field name='state'/>
+	                    </tree>
+	                </field>
+	            </page>
+	        </notebook>
+		</odoo>
+	</code>
+
+
+	#Note
+	-> The object self.env gives access to request parameters and other useful things:
+
+		-> self.env.cr or self._cr is the database cursor object; it is used for querying the database
+
+		-> self.env.uid or self._uid is the current user’s database id
+
+		-> self.env.user is the current user’s record
+
+		-> self.env.context or self._context is the context dictionary
+
+		-> self.env.ref(xml_id) returns the record corresponding to an XML id
+
+		-> self.env[model_name] returns an instance of the given model
+
+
+<!-- chapter 8 Compute fields and Onchanges -->
+	-> Untill now we leaned about relational fields, models, views and fields. so today we are going to learn new type of fields:
+		
+		1. Computed_fields
+		2. Onchanges
+
+
+
+
+
+
+
+<!-- Build report -->
+	->
+
+
+
+
+	
+
+
+
+
+
