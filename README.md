@@ -104,7 +104,7 @@ note : ignore all <code></code> tags inside documentation.
 -> data file(csv):
 	ir.model.access.csv
 
--> Access rights: 
+-> Access rights:
 	-> When no access rights are defined on a model, Odoo determines that no users can access the data. It is even notified in the log:
 
 	ex:
@@ -185,47 +185,47 @@ note : ignore all <code></code> tags inside documentation.
 
 -> so as we created tree view, now we are going to create another view named form view.
 	<code>
-		<record id="estate_property_form" model="ir.ui.form">
-			<field name="name">estate.property.form</field>
-			<field name="model">estate.property</field>
-			<field name="arch" type="xml">
-				<form>
-					<sheet>
-						<field name="name"/>
-						<field name="age"/>
-						<field name="dob"/>
-					</sheet>
-				</form>
-			</field>
-		</record>
+	 <record id="estate_property_form" model="ir.ui.form">
+	   <field name="name">estate.property.form</field>
+	   <field name="model">estate.property</field>
+	   <field name="arch" type="xml">
+	     <form>
+		<sheet>
+		  <field name="name"/>
+		  <field name="age"/>
+		  <field name="dob"/>
+		</sheet>
+	     </form>
+	  </field>
+	 </record>
 	</code>
 
 -> we can add pages inside form view: so lets see how to do that.
 	<code>
-		<notebook>
+	 <notebook>
             <page string="Description">
                 <field name="description"/>
             </page>
-        </notebook>
+         </notebook>
 	</code>
 
 -> until now we seen how to create tree view and form view. but what if we want to search something from search bar. so for that purpose we have to create search view.
 	<code>
-		<record id="estate_property_search" model="ir.ui.view">
-			<field name="name">estate.property.search</field>
-			<field name="model">estate.property</field>
-			<field name="arch" type="xml">
-				<search>
-					<field name="name"/>
-					<field name="age"/>
-					<field name="dob"/>
-					<field name="gender"/>
-				</search>
-			</field>
-		</record>	
+	 <record id="estate_property_search" model="ir.ui.view">
+		<field name="name">estate.property.search</field>
+		<field name="model">estate.property</field>
+		<field name="arch" type="xml">
+			<search>
+				<field name="name"/>
+				<field name="age"/>
+				<field name="dob"/>
+				<field name="gender"/>
+			</search>
+		</field>
+	 </record>	
 	</code> 
 
--> now lets create filters in search view:
+-> now lets create filters in search view.
 	<code>
 		<filter string="Available" name="available" domain="[('age','>','18')]"/>
 	</code>
