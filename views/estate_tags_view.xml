@@ -8,6 +8,7 @@
         	<form string="Property tags">
         		<sheet>
         			<h1><field name="name" string="Tags"/></h1>
+                    <field name="color" widget="color_picker"/>
         		</sheet>
         	</form>
         </field>

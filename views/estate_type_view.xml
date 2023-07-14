@@ -1,13 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <record id="estate_type_tree" model="ir.ui.view">
+        <field name="name">estate.type.tree</field>
+        <field name="model">estate.property.type</field>
+        <field name="arch" type="xml">
+            <tree string="Property Type">
+               <field name="sequence" widget="handle"/>
+               <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
 	<record id="estate_type_form" model="ir.ui.view">
 		<field name="name">estate.type.form</field>
         <field name="model">estate.property.type</field>
         <field name="arch" type="xml">
         	<form string="Property type">
         		<sheet>
+                    <div name="button_box" position="inside">
+                        <button class="oe_stat_button" type="object" name="find_offer"
+                        icon="fa-money">
+                            <field string="Offers" name="offer_count" widget="statinfo"/>
+                        </button>
+                    </div>
         			<h1><field name="name"/></h1>
+                    <notebook>
+                        <!-- inline view -->
+                        <page string="Property">
+                                <field name="property_ids">
+                                    <tree editable="bottom">
+                                        <field name='name'/>
+                                        <field name='expected_price'/>
+                                        <field name='state'/>
+                                    </tree>
+                                </field>
+                        </page>
+                    </notebook>
         		</sheet>
         	</form>
         </field>

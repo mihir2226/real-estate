@@ -10,12 +10,15 @@
                     <field name="postcode"/>
                     <field name="expected_price"/>
                     <field name="bedrooms"/>
-                    <field name="living_area"/>
+                    <field name="living_area" filter_domain="[('living_area','>=',self)]"/>
                     <field name="facades"/>
+                    
+                    <filter string="Available" name="available" domain="[('state', '=', 'new')]"/>
                     <separator/>
-                    <filter string="Available" name="available" domain="[('active', '=', True)]"/>
+
                     <group expand="1" string="Group By">
                         <filter string="PostCode" name="postcode" context="{'group_by':'postcode'}"/>
+                        <filter string="Price" name="price" context="{'group_by':'expected_price'}"/>
                     </group>
                 </search>
             </field>
@@ -25,15 +28,17 @@
         <field name="name">estate.tree</field>
         <field name="model">estate.property</field>
         <field name="arch" type="xml">
-            <tree string="Estate">
+            <tree string="Estate" decoration-bf="state=='accept'" decoration-success="state in ['accept','recieved']" decoration-danger="state=='reject'" decoration-muted="state in ['sold','cancel']">
                <field name="name"/>
-               <field name="tags_ids" widget="many2many_tags"/>
+               <field name="property_id"/>
                <field name="postcode"/>
+               <field name="tags_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                <field name="bedrooms"/>
                <field name="living_area"/>
                <field name="expected_price"/>
                <field name="selling_price" readonly="1"/>
-               <field name="date_availability"/>
+               <field name="date_availability" optional="hide"/>
+               <field name="state" invisible="1"/>
             </tree>
         </field>
     </record>
@@ -43,15 +48,24 @@
         <field name="model">estate.property</field>
         <field name="arch" type="xml">
             <form string="Estate">
+                <header>
+                    <button name="sold_button" string="Sold" type="object" attrs="{'invisible': ['|',('state', '=', 'sold'),('state', '=', 'cancel')]}"/>
+
+                    <button name="cancel_button" string="Cancle" type="object" attrs="{'invisible': ['|',('state', '=', 'sold'),('state', '=', 'cancel')]}"/>
+                    
+                    <!-- widget -->
+                    <field name="state" widget="statusbar" statusbar_visible="new,recieved,accept,reject,sold,cancle"/>
+                </header>
                 <sheet>
                     <h1><field name="name"/></h1>
-                    <field name="tags_ids" widget="many2many_tags"/>
+                    <field name="tags_ids" widget="many2many_tags" options="{'color_field': 'color'}" editable="bottom"/>
 
                     <group>
                         <group>
                             <field name="property_id" style="color:#0dc3c3"/>
                             <field name="postcode"/>
                             <field name="date_availability"/>
+                            <field name="state" invisible="1"/>
                         </group>
 
                         <group>
@@ -72,8 +86,8 @@
                                         <field name="facades"/>
                                         <field name="garage"/>
                                         <field name="garden"/>
-                                        <field name="garden_area"/>
-                                        <field name="garden_orientation"/>
+                                        <field name="garden_area" attrs="{'invisible': [('garden', '=', False)]}"/>
+                                        <field name="garden_orientation" attrs="{'invisible': [('garden', '=', False)]}"/>
                                         <field name="total_area" string="Total area(sqm)"/>
                                         <field name="active" invisible="1"/>
                                     </group>
@@ -81,13 +95,18 @@
                             </page>
 
                             <page string="Offers">
-                                <field name="offer_ids">
-                                    <tree string='offer'>
+                                <field name="offer_ids" attrs="{'readonly': ['|','|',('state', '=', 'sold'),('state', '=', 'accept'),('state', '=', 'cancel')]}">
+                                    <tree string='offer' decoration-success="'|',state=='accept',state=='recieved'" decoration-bf="state=='accept'" decoration-danger="state=='reject'" editable="bottom">
                                         <field name='price' string='Price'/>
                                         <field name='partner_id' string='Partner'/>
-                                        <field name='state' string='State'/>
                                         <field name="validity" string="Validity(days)"/>
                                         <field name="deadline"/>
+                                        
+                                        <button name="accept_button" title="accept" type="object" icon="fa-check" attrs="{'invisible': ['|',('state', '=', 'accept'),('state', '=', 'reject')]}"/>
+                                        
+                                        <button name="reject_button" title="accept" type="object" icon="fa-times" attrs="{'invisible': ['|',('state', '=', 'accept'),('state', '=', 'reject')]}"/>
+                                        
+                                        <field name='state' string=' ' attrs="{'invisible':['|',('state', '=', 'accept'),('state', '=', 'reject')]}"/>
                                     </tree>
                                 </field>
                             </page>
@@ -104,10 +123,49 @@
         </field>
     </record>
 
+    <record id="estate_kanban" model="ir.ui.view">
+        <field name="name">estate.kanban</field>
+        <field name="model">estate.property</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="property_id" records_draggable="0">
+                <field name="name"/>
+                <field name="state"/>
+                <field name="best_price"/>
+                <field name="selling_price"/>
+                <field name="tags_ids"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <strong><field name="name"/></strong>
+                            <div>
+                                <span style="color:grey">Expected price:  
+                                <field name="expected_price"/></span>
+                            </div>
+
+                            <div t-if="record.state.raw_value == 'accept'">
+                                <span style="color:grey">Selling price:  
+                                <field name="selling_price"/></span>
+                            </div>
+                            
+                            <div t-if="record.state.raw_value == 'recieved'">
+                                <span style="color:grey">Best price
+                                <field name="best_price" /></span>
+                            </div>
+                                <field name="tags_ids" options="{'color_field': 'color'}"/>
+                        </div> 
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
 
     <record id="estate_action" model="ir.actions.act_window">
+        <field name="context">{"search_default_available":1}</field> 
+        <!-- change it to one in the end  -->
         <field name="name">Real Estate</field>
         <field name="res_model">estate.property</field>
+        <field name="view_mode">tree,form,kanban</field>
     </record>
 
     <menuitem

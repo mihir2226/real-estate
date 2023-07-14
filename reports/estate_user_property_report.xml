@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Example of sub-templating -->
+    <template id="report_user_property"> <!-- template nu id name -->
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div t-foreach="o.property_ids" t-as="property">
+                            <t t-call="estate.report_salesman_property_sheet"/>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+    <record id="report_user_property_action" model="ir.actions.report"> <!-- report action  nu id name-->
+        <field name="name">Salesman Property Report</field>
+        <field name="model">res.users</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">estate.report_user_property</field> <!-- template id aiya mukvu -->
+        <field name="report_file">estate.report_salesman_property_sheet</field>
+        <field name="print_report_name">'User property'</field>
+        <field name="binding_model_id" ref="model_res_users"/> <!-- model_model_name -->
+        <field name="binding_type">report</field>
+    </record>
+</odoo>
