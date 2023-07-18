@@ -37,7 +37,7 @@
 
 [module.__manifest__.py]
 
-	{
+	```{
 		'name':'real estate', <!-- this name show on module (required)-->
 		'summary':'this shows what your module does',
 		'version':'1.0', <!-- (required) -->
@@ -49,23 +49,24 @@
 			'security/ir.model.accesss.csv',
 			'view/estate_property_view.xml',
 		] <!-- (required) -->
-	}
+	}```
 
 
 
 [module.models.__init__.py]
-	from . import model_name
+
+	```from . import model_name```
 
 
 [module.models.model_name.py]
 
-	from odoo import field, models
+	```from odoo import field, models
 
 	class ModelName(models.Model):
 		_name="model.name"
 		_description="model description"
 
-		name = fields.Char() <!-- field creation -->
+		name = fields.Char() <!-- field creation -->```
 
 
 
@@ -81,8 +82,8 @@
 	7. Selection [fields.Selection(selection=[('db_value','ui')])]
 
 	ex:
-	name = fields.Char()
-	age = fields.Integer()
+	```name = fields.Char()
+	age = fields.Integer()```
 
 -> Attributes of fields:
 	1. string : for label of thee field in ui
@@ -100,7 +101,7 @@
 <!-- chapter 4 Security bascs-->
 
 -> data file(csv):
-	ir.model.access.csv
+	-> ir.model.access.csv
 
 -> Access rights: 
 	-> When no access rights are defined on a model, Odoo determines that no users can access the data. It is even notified in the log:
@@ -112,8 +113,8 @@
 	-> Access rights are defined as records of the model ir.model.access.
 
 	ex:
-	id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
-	access_test_model,access_test_model,model_test_model,base.group_user,1,0,0,0
+	```id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+	access_test_model,access_test_model,model_test_model,base.group_user,1,0,0,0```
 
 
 <!-- chapter 5 Play with ui -->
@@ -133,7 +134,8 @@
 		ex: estate_property_view.xml 
 
 	[views.estate_property_view.xml]:
-		<?xml version="1.0" encoding="utf-8"?>
+		
+		```<?xml version="1.0" encoding="utf-8"?>
 		<odoo>
 			<record id="estate_property_tree" model="ir.ui.view">
 				<field name="name">estate.property.tree</field>
@@ -144,30 +146,30 @@
 					</tree>
 				</field>
 			</record>
-		</odoo>
+		</odoo>```
 
 
 
 -> now we have to create an action for our model.
 	
-		<record id="estate_property_action" model="ir.ui.actions.act_window">
+		```<record id="estate_property_action" model="ir.ui.actions.act_window">
 			<field name="name">Estate</field>
 			<field name="res_model">estate.property</field>
 			<field name="view_mode">tree</field>
-		</record>
+		</record>```
 	
 
 
 -> lets create menu for our action
 	
-		<menuitem 
+		```<menuitem 
 		id="estate_property_menu_root" 
-		action="estate_property_action" name="Real estate"/>
+		action="estate_property_action" name="Real estate"/>```
 	
 
 -> Wait a little, we are going to make it little more fun. lets create tabs for our module.
 	
-		<menuitem 
+		```<menuitem 
 		id="estate_property_menu_root" 
 		name="Real estate"/>
 			<menuitem
@@ -176,13 +178,13 @@
 		<menuitem 
 		id="estate_property_menu" 
 		name="Properties"
-		parent="advertise_menu" action="estate_property_action"/>
+		parent="advertise_menu" action="estate_property_action"/>```
 	
 
 
 -> so as we created tree view, now we are going to create another view named form view.
 	
-		<record id="estate_property_form" model="ir.ui.view">
+		```<record id="estate_property_form" model="ir.ui.view">
 			<field name="name">estate.property.form</field>
 			<field name="model">estate.property</field>
 			<field name="arch" type="xml">
@@ -194,21 +196,21 @@
 					</sheet>
 				</form>
 			</field>
-		</record>
+		</record>```
 	
 
 -> we can add pages inside form view: so lets see how to do that.
 	
-		<notebook>
+		```<notebook>
             <page string="Description">
                 <field name="description"/>
             </page>
-        </notebook>
+        </notebook>```
 	
 
 -> until now we seen how to create tree view and form view. but what if we want to search something from search bar. so for that purpose we have to create search view.
 	
-		<record id="estate_property_search" model="ir.ui.view">
+		```<record id="estate_property_search" model="ir.ui.view">
 			<field name="name">estate.property.search</field>
 			<field name="model">estate.property</field>
 			<field name="arch" type="xml">
@@ -219,20 +221,20 @@
 					<field name="gender"/>
 				</search>
 			</field>
-		</record>	 
+		</record>``` 
 
 -> now lets create filters in search view:
 	
-		<filter string="Available" name="available" domain="[('age','>','18')]"/>
+		```<filter string="Available" name="available" domain="[('age','>','18')]"/>```
 	
 	-> it adds filter to our model
 
 -> now lets create group functionality for our model.
 
-		<group expan="1" string="Group By">
+		```<group expan="1" string="Group By">
 			<filter string="Gender" name="gender" context="{'group_by':'gender'}"/>
 			<filter string="Age" name="age" context="{'group_by':'age'}"/>
-		</group>
+		</group>```
 
 
 <!-- chapter 7 Relation betweens models -->
@@ -248,25 +250,25 @@ Many2one:
 
 ex: estate.property
 
-		from odoo import fields, models
+		```from odoo import fields, models
 
 		class EstateProperty(models.Model):
 			_name = 'estate.property'
 			_description = "its estate main table"
 
-			property_type_id = fields.Many2one('estate.property.type' string="Property Type")
+			property_type_id = fields.Many2one('estate.property.type' string="Property Type")```
 
 
 	-> estate_property_type model.
 	
 
-		from odoo import fields, models
+		```from odoo import fields, models
 
 		class EstatePropertyType(models.Model):
 			_name = 'estate.property.type'
 			_description = "this table contain types of properties"
 
-			name = fields.Char()
+			name = fields.Char()```
 
 
 
@@ -275,25 +277,25 @@ Many2many:
 
 ex: estate.property
 
-		from odoo import fields, models
+		```from odoo import fields, models
 
 		class EstateProperty(models.Model):
 			_name = 'estate.property'
 			_description = "its estate main table"
 
-			property_tags_ids = fields.Many2many('estate.property.tags' string="Property Tags")
+			property_tags_ids = fields.Many2many('estate.property.tags' string="Property Tags")```
 
 
 	-> estate_property_tags model.
 
 
-		from odoo import fields, models
+		```from odoo import fields, models
 
 		class EstatePropertyTags(models.Model):
 			_name = 'estate.property.tags'
 			_description = "this table contain tags of properties"
 
-			name = fields.Char()
+			name = fields.Char()```
 
 
 One2many:
@@ -301,21 +303,21 @@ One2many:
 
 ex:
 
-		#estate property model
+		```#estate property model
 		from odoo import fields, models
 
 		class EstateProperty(models.Model):
 			_name = 'estate.property'
 			_description = "its estate main table"
 
-			property_offers_ids = fields.One2many('estate.property.offers', 'property_id')
+			property_offers_ids = fields.One2many('estate.property.offers', 'property_id')```
 
 
 -> estate_property_offers model.
 -> Whenever you using One2many do not forget to add inverse Many2one key in the model you relating.
 
 
-		from odoo import fields, models
+		```from odoo import fields, models
 
 		class EstatePropertyOffers(models.Model):
 			_name = 'estate.property.offers'
@@ -326,13 +328,13 @@ ex:
 			partner_id = fields.Many2one("res.partner", required=True) 
 			property_id = fields.Many2one("estate.property", required=True) #inverse field
 			validity = fields.Integer(default = 7)
-			deadline = fields.Date()
+			deadline = fields.Date()```
 
 
 -> estate_property_offers_view view.
 
 
-		<?xml version="1.0" encoding="UTF-8"?>
+		```<?xml version="1.0" encoding="UTF-8"?>
 		<odoo>
 			<record id="estate_offer_tree" model="ir.ui.view">
 		        <field name="name">estate.offer.tree</field>
@@ -366,12 +368,12 @@ ex:
 		        	</form>
 		        </field>
 			</record>
-		</odoo>
+		</odoo>```
 
 
 -> Now create view for One2many field inside estate_property_view (form view)
 
-		<?xml version="1.0" encoding="UTF-8"?>
+		```<?xml version="1.0" encoding="UTF-8"?>
 		<odoo>
 			<notebook>
 				<page string="Offers">
@@ -386,7 +388,7 @@ ex:
 	                </field>
 	            </page>
 	        </notebook>
-		</odoo>
+		</odoo>```
 
 
 #Note
@@ -412,29 +414,14 @@ ex:
 	2. Onchanges
 
 	
-		total = fields.Float(compute="_compute_total")
-	    amount = fields.Float()
+		```total = fields.Float(compute="_compute_total")
+	    amount = fields.Float()`
 
 	    @api.depends("amount")
 	    def _compute_total(self):
 	        for record in self:
-	            record.total = 2.0 * record.amount
+	            record.total = 2.0 * record.amount```
 	
 
 
-
-
-
-
-<!-- Build report -->
-	->
-
-
-
-
-	
-
-
-
-
-
+##To Be Continued
