@@ -37,7 +37,7 @@
 
 [module.__manifest__.py]
 
-	```{
+	`{
 		'name':'real estate', <!-- this name show on module (required)-->
 		'summary':'this shows what your module does',
 		'version':'1.0', <!-- (required) -->
@@ -49,8 +49,7 @@
 			'security/ir.model.accesss.csv',
 			'view/estate_property_view.xml',
 		] <!-- (required) -->
-	}```
-
+	}`
 
 
 [module.models.__init__.py]
