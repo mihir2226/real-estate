@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<odoo>
+        <record id="print_all_property_form" model="ir.ui.view">
+            <field name="name">print.all.property.form</field>
+            <field name="model">print.all.property.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Print all property">
+                    <sheet>    
+                        <!-- <group><field name="type_id"/></group> -->
+                        <h1>This is wizard</h1>
+                        <group>
+                            <field name="old_partner_id"/>
+                            <field name="new_partner_id"/>
+                        </group>
+                        <footer>
+                            <button name="add_info" string="Add" class="btn-primary" type="object"/>
+                            <button string="cancel" class="btn-secondary" special="cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="estate_print_all_action" model="ir.actions.act_window">
+            <field name="name">Print All Property</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">print.all.property.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="print_all_property_form"/>
+            <field name="target">new</field>
+            <field name="context">{
+                'dialog_size' : 'medium',
+            }</field>
+        </record>
+</odoo>

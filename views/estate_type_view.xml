@@ -28,13 +28,13 @@
                     <notebook>
                         <!-- inline view -->
                         <page string="Property">
-                                <field name="property_ids">
-                                    <tree editable="bottom">
-                                        <field name='name'/>
-                                        <field name='expected_price'/>
-                                        <field name='state'/>
-                                    </tree>
-                                </field>
+                            <field name="property_ids">
+                                <tree editable="bottom">
+                                    <field name='name'/>
+                                    <field name='expected_price'/>
+                                    <field name='state'/>
+                                </tree>
+                            </field>
                         </page>
                     </notebook>
         		</sheet>
@@ -57,6 +57,5 @@
     <menuitem
         id="estate_type_menu"
         name="Properties type" action="estate_type_action" parent="settings_menu"/>
-
 
 </odoo>

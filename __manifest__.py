@@ -9,6 +9,9 @@
     'depends': [],
     'data': [
         'security/ir.model.access.csv',
+        'security/ir_rules2.xml',
+        'security/res_groups2.xml',
+        'wizard/print_all_property_view.xml',
         'views/estate_view.xml',
         'views/estate_type_view.xml',
         'views/estate_tags_view.xml',

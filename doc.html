@@ -122,3 +122,121 @@ def _onchange_partner_id(self):
     self.name = "Document for %s" % (self.partner_id.name)
     self.description = "Default description for %s" % (self.partner_id.name)
 
+
+<!-- chapter 10 buttons -->
+create sold and cancle button
+
+when you click cancle button property state is change to cancaled
+
+after cancaling property you can not sold property
+
+refuse and accept icons
+
+Once an offer is accepted, the selling price and the buyer should be set: 
+
+<!-- chapter 11 constraints sql, python-->
+user can not enter negativ values
+
+property types and tag name must be unique
+
+SQL constraints are defined through the model attribute _sql_constraints
+
+>>SQL constraints are an efficient way of ensuring data consistency. However it may be necessary to make more complex checks which require Python code. In this case we need a Python constraint.
+
+
+<!-- chapter 12 sprinkles -->
+#Inline views
+>>Add the One2many field property_ids to the estate.property.type model.
+>>Add the field in the estate.property.type form view as depicted in the Goal of this section.
+
+#widget
+>> statusbar, statusbar_visible="new,accept,reject,sold"
+
+#List Order
+>> _order(id desc)
+
+#view
+>> <tree default_order="date desc">
+
+#Manual
+>> _order = "sequence"
+>> sequence = fields.Integer('Sequence', default=1)
+>> <field name="sequence" widget="handle"/>
+
+##Attributes and options
+>> tags colors
+>> check box color
+>> state colors
+>> if we click on garden then other two options seen
+>> after click button vanish
+
+#options
+>> options="{'color_field': 'color'}
+>> color = fields.Integer(string="Color", default= '1')
+>> <field name="color" widget="color_picker"/>
+
+#attributes
+>> <field name="garden"/>
+>> <field name="garden_area" attrs="{'invisible': [('garden', '=', False)]}"/>
+>> <field name="garden_orientation" attrs="{'invisible': [('garden', '=', False)]}"/>
+
+[sold, cancle button invisible]
+>> <button name="sold_button" string="Sold" type="object" attrs="{'invisible': ['|',('state', '=', 'sold'),('state', '=', 'cancel')]}"/>
+
+>> <button name="cancel_button" string="Cancle" type="object" attrs="{'invisible': ['|',('state', '=', 'sold'),('state', '=', 'cancel')]}"/>
+
+
+[accept, right button invisible]
+>> <button name="accept_button" title="accept" type="object" icon="fa-check" attrs="{'invisible': ['|',('state', '=', 'accept'),('state', '=', 'reject')]}"/>
+                                        
+>> <button name="reject_button" title="accept" type="object" icon="fa-times" attrs="{'invisible': ['|',('state', '=', 'accept'),('state', '=', 'reject')]}"/>
+
+[ristrict user to add offer when state is accept,sold or cancel]
+>> <field name="offer_ids" attrs="{'readonly': ['|',('state', '=', 'sold'),('state', '=', 'cancel'),('state', '=', 'accept')]}">
+
+##List
+>> change text color when accept or reject offers
+>> hide available date by default
+>> Make the estate.property.offer and estate.property.tag list views editable.
+
+
+>> use optional="hide" to hide the available date
+>> editable = "bottom" for list view editable
+>> use <tree string='offer' editable="bottom" decoration-success="state=='accept'" decoration-danger="state=='cancel'"> to change text color
+
+[On the estate.property list view:]
+
+>> Properties with an offer received are green
+>> Properties with an offer accepted are green and bold
+>> Properties sold are muted
+
+>> <tree string="Estate" decoration-success="'|',state=='recieved',state=='accept'" decoration-bf="state=='accept'" decoration-danger="state=='reject'" decoration-muted="state=='sold'">
+
+[On the estate.property.offer list view:]
+
+>> Refused offers are red
+>> Accepted offers are green
+>> The state should not be visible anymore
+
+>> <tree string='offer' editable="bottom" decoration-success="state=='accept'" decoration-danger="state=='reject'">
+
+##Search
+
+>> add default filter for available in estate.property
+<field name="context">{"search_default_available":1}</field>
+
+>> learn about like and ilike
+
+>> Add a filter_domain to the living area to include properties with an area equal to or greater than the given value.
+<field name="living_area" filter_domain="[('living_area','>=',self)]"/>
+
+
+<!-- chapter 13 Inheritance -->
+>>It should not be possible to delete a property which is not new or canceled
+>>It should not be possible to create an offer with a lower price than an existing offer
+
+##python inheritance
+>> Prevent deletion of a property if its state is not ‘New’ or ‘Canceled’
+
+##Model Inheritance
+>> deligation inheritance

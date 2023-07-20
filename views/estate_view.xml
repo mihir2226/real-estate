@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <!-- search view -->
     <record id="estate_search" model="ir.ui.view">
             <field name="name">estate.search</field>
             <field name="model">estate.property</field>
@@ -13,7 +14,7 @@
                     <field name="living_area" filter_domain="[('living_area','>=',self)]"/>
                     <field name="facades"/>
                     
-                    <filter string="Available" name="available" domain="[('state', '=', 'new')]"/>
+                    <filter string="Available" name="available" domain="['|',('state', '=', 'new'),('state','=','accept')]"/> <!-- shows accepted and new -->
                     <separator/>
 
                     <group expand="1" string="Group By">
@@ -24,6 +25,7 @@
             </field>
     </record>
 
+    <!-- tree view -->
     <record id="estate_tree" model="ir.ui.view">
         <field name="name">estate.tree</field>
         <field name="model">estate.property</field>
@@ -43,6 +45,7 @@
         </field>
     </record>
 
+    <!-- form view -->
     <record id="estate_form" model="ir.ui.view">
         <field name="name">estate.form</field>
         <field name="model">estate.property</field>
@@ -53,6 +56,8 @@
 
                     <button name="cancel_button" string="Cancle" type="object" attrs="{'invisible': ['|',('state', '=', 'sold'),('state', '=', 'cancel')]}"/>
                     
+                    <button name="%(estate.estate_print_all_action)d" string="Add Info" type="action"/>
+
                     <!-- widget -->
                     <field name="state" widget="statusbar" statusbar_visible="new,recieved,accept,reject,sold,cancle"/>
                 </header>
@@ -65,13 +70,14 @@
                             <field name="property_id" style="color:#0dc3c3"/>
                             <field name="postcode"/>
                             <field name="date_availability"/>
-                            <field name="state" invisible="1"/>
+                            <field name="state" invisible="0"/>
                         </group>
 
                         <group>
                             <field name="expected_price"/>
                             <field name="best_price"/>
-                            <field name="selling_price" readonly="1"/>
+                            <field name="selling_price" readonly="1" 
+                            groups="estate.custom_property_manager"/>
                         </group>
                     </group>
                     <group>
@@ -123,16 +129,13 @@
         </field>
     </record>
 
+    <!-- kanban -->
     <record id="estate_kanban" model="ir.ui.view">
         <field name="name">estate.kanban</field>
         <field name="model">estate.property</field>
         <field name="arch" type="xml">
             <kanban default_group_by="property_id" records_draggable="0">
-                <field name="name"/>
                 <field name="state"/>
-                <field name="best_price"/>
-                <field name="selling_price"/>
-                <field name="tags_ids"/>
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_global_click">
@@ -159,22 +162,25 @@
         </field>
     </record>
 
-
+    <!-- action for model -->
     <record id="estate_action" model="ir.actions.act_window">
         <field name="context">{"search_default_available":1}</field> 
-        <!-- change it to one in the end  -->
         <field name="name">Real Estate</field>
         <field name="res_model">estate.property</field>
         <field name="view_mode">tree,form,kanban</field>
     </record>
 
+    <!-- menu for action -->
     <menuitem
         id="estate_menu_root"
         name="Real Estate"/>
 
         <menuitem
         id="advetise_menu"
-        name="Advertisement" parent="estate_menu_root"/>
+        name="Advertisement" parent="estate_menu_root" groups="custom_property_manager"/>
+    <!-- <menuitem
+        id="print_wizard_menu"
+        name="Print Wizard" action="estate_print_all_action" parent="advetise_menu"/> --> 
     <menuitem
         id="estate_menu"
         name="Properties" action="estate_action" parent="advetise_menu"/>

@@ -44,15 +44,4 @@
                 </xpath>
         </field>
     </record>
-
-<!--     <record id="inherited_res_users_security_form" model="ir.ui.view">
-            <field name="name">auth</field>
-            <field name="model">res.users</field>
-            <field name="inherit_id" ref="auth_totp.view_totp_form"/>
-            <field name="arch" type="xml">
-                <xpath expr="//page[@name='security']" position="replace">
-                    <attribute name="invisible">1</attribute>
-                </xpath>
-            </field>
-    </record> -->
 </odoo>

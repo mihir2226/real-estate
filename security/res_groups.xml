@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="0">
+	
+	<record model="ir.module.category" id="estate_property_category_groups">
+        <field name="description">category</field>
+        <field name="sequence">7</field>
+    </record>
+
+	<record id="group_property_user" model="res.groups">
+		<field name="name">Property Users</field>
+		<field name="category_id" res="estate_property_category_groups"></field>
+	</record>
+
+	<record id="group_property_manager" model="res.groups">
+		<field name="name">Property Manager</field>
+		<field name="category_id" res="estate_property_category_groups"></field>
+	</record>
+
+</odoo>

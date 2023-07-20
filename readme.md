@@ -37,7 +37,7 @@
 
 [module.__manifest__.py]
 
-	`{
+	```{
 		'name':'real estate', <!-- this name show on module (required)-->
 		'summary':'this shows what your module does',
 		'version':'1.0', <!-- (required) -->
@@ -49,7 +49,8 @@
 			'security/ir.model.accesss.csv',
 			'view/estate_property_view.xml',
 		] <!-- (required) -->
-	}`
+	}```
+
 
 
 [module.models.__init__.py]
@@ -372,22 +373,24 @@ ex:
 
 -> Now create view for One2many field inside estate_property_view (form view)
 
-		```<?xml version="1.0" encoding="UTF-8"?>
-		<odoo>
-			<notebook>
-				<page string="Offers">
-	                <field name="offer_ids">
-	                    <tree string='offer'>
-	                        <field name='price' string='Price'/>
-	                        <field name='partner_id' string='Partner'/>
-	                        <field name="validity" string="Validity(days)"/>
-	                        <field name="deadline"/>
-	                        <field name='state'/>
-	                    </tree>
-	                </field>
-	            </page>
-	        </notebook>
-		</odoo>```
+```
+	<?xml version="1.0" encoding="UTF-8"?>
+	<odoo>
+		<notebook>
+			<page string="Offers">
+	            <field name="offer_ids">
+	                <tree string='offer'>
+	                    <field name='price' string='Price'/>
+	                    <field name='partner_id' string='Partner'/>
+	                    <field name="validity" string="Validity(days)"/>
+	                    <field name="deadline"/>
+	                    <field name='state'/>
+	                </tree>
+	            </field>
+	        </page>
+	    </notebook>
+	</odoo>
+```
 
 
 #Note
@@ -424,3 +427,20 @@ ex:
 
 
 ##To Be Continued
+
+<!-- security  group and rules -->
+-> create category
+-> create groups
+-> create rules for groups
+
+<!-- wizard creation -->
+-> wizard is use for temporary purpose, it doesnt store data into database.
+-button type="action"
+-you can print reports trhough wizard
+-create py file with as model.TranseintModel
+-create __init__.py file inside wizard folder
+-give path of wizard folder inside main __init__.py file as first import.
+-create a view for wizard in wich we create views and action
+-dont forget to put this file inside manifest file above views.
+-now check if your wizard action showing in window action tab
+-now add menu in main view you want your wizard action to work 

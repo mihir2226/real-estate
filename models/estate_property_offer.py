@@ -15,10 +15,16 @@ class estatePropertyOffer(models.Model):
 	deadline = fields.Date(compute='_compute_deadline', inverse='_inverse_deadline')
 	property_type_id = fields.Many2one(related='property_id.property_id', store=True)
 
+	#sql constraints
+	_sql_constraints = [
+        ('check_offer_price', 'CHECK(price >= 1)',
+         'Offer price must be a positive')
+    ]
+
 	@api.model
 	def create(self, vals):
 		property = self.env['estate.property'].browse(vals['property_id'])
-		if vals['price'] < property.best_price:
+		if vals['price'] < property.best_price and vals['price'] > 0:
 			raise UserError(_('Cannot create offer with a lower amount than $%d',property.best_price))
 		property.state = 'recieved'
 		return super().create(vals)
@@ -42,6 +48,7 @@ class estatePropertyOffer(models.Model):
 				rcs.state = "accept"
 				for prcs in rcs.property_id:
 					prcs.state = "accept"
+					print('>>>>>> accept button >>>>>>>',prcs.state)
 					prcs.selling_price = rcs.price
 					prcs.buyer = rcs.partner_id
 			else:
@@ -55,8 +62,4 @@ class estatePropertyOffer(models.Model):
 				rcs.property_id.selling_price = ''
 				rcs.property_id.buyer = ''
 
-	#sql constraints
-	_sql_constraints = [
-        ('check_offer_price', 'CHECK(price >= 0)',
-         'Offer price must be a positive')
-    ]
+
